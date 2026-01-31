@@ -1,0 +1,40 @@
+services:
+  crawler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: us-data-crawler
+    environment:
+      # Data provider
+      - DATA_PROVIDER=${DATA_PROVIDER:-polygon}
+
+      # Lưu packet: csv | parquet | json (hoặc mặc định theo PROFILE)
+      - SAVE_FORMAT=${SAVE_FORMAT}
+      - PROFILE=${PROFILE:-prod}
+
+      # Polygon API
+      - POLYGON_API_KEY=${POLYGON_API_KEY}
+      - POLYGON_API_KEYS=${POLYGON_API_KEYS}
+      - KEY_STRATEGY=${KEY_STRATEGY:-round-robin}
+
+      # Tiingo API
+      - TIINGO_API_KEY=${TIINGO_API_KEY}
+
+      # Stock selection
+      - STOCK_SELECTION=${STOCK_SELECTION:-file}
+      - TICKERS_FILE=${TICKERS_FILE}
+
+      # Thư mục lưu trong container (phải khớp với volume mount)
+      - DATA_DIR=${DATA_DIR:-/app/data}
+    volumes:
+      # Persist dữ liệu: host ./data (hoặc DATA_DIR_HOST) -> container /app/data
+      - ${DATA_DIR_HOST:-./data}:/app/data
+      # Indices (tickers) read-only
+      - ./indices:/app/indices:ro
+    networks:
+      - us-data-network
+    restart: unless-stopped
+
+networks:
+  us-data-network:
+    driver: bridge
