@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+data/
+.idea
+.vscode
+*.swp
+*.swo
+main
+*.exe

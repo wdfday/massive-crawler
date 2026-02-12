@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"os"
 	"strconv"
+
+	"us-data/internal/model"
 )
 
 // CSVSaver lưu packet dưới dạng CSV (header: t,o,h,l,c,v,vw,n).
@@ -11,7 +13,7 @@ type CSVSaver struct{}
 
 func (CSVSaver) Extension() string { return "csv" }
 
-func (CSVSaver) Save(bars []Bar, path string) error {
+func (CSVSaver) Save(bars []model.Bar, path string) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return err
